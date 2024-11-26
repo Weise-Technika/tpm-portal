@@ -6,6 +6,7 @@ interface Props {
 const { title } = Astro.props;
 import "@fontsource/kanit";
 import "@fontsource/sarabun";
+import InstallApp from '../components/InstallApp.vue';
 ---
 
 <!doctype html>
@@ -22,6 +23,7 @@ import "@fontsource/sarabun";
 		<meta name="theme-color" content="#000000" />
 	</head>
 	<body>
+		<InstallApp />
 		<slot />
 	</body>
 </html>
