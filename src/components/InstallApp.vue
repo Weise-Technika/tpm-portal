@@ -13,6 +13,7 @@
         color:rgb(255, 255, 255);
         font-family: Kanit;
         height: 65px;
+        display: none;
     }
     .right {
         float: right;
@@ -36,24 +37,19 @@
             }
         },
         mounted() {
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault()
-                this.deferredPrompt = e
-            })
-
             // ควบคุมปุ่มติดตั้งแอพ
-            let deferredPrompt;
+            let deferredPrompt = null;
             const installBtn = document.getElementById('install-btn');
-            const installCard = document.querySelector('card-install');
+            const installCard = document.getElementById('card-install');
 
             // ตรวจสอบว่าเบราว์เซอร์รองรับ PWA หรือไม่
             window.addEventListener('beforeinstallprompt', (e) => {
+                
                 // ป้องกันไม่ให้แสดงแบนเนอร์ติดตั้งของเบราว์เซอร์
                 e.preventDefault();
                 // เก็บการกระทำสำหรับการติดตั้ง
                 deferredPrompt = e;
                 // แสดงปุ่ม "Add to Home Screen"
-                //installBtn.style.display = 'block';
                 installCard.style.display = 'block';
 
                 // เมื่อผู้ใช้คลิกปุ่มติดตั้ง
@@ -73,6 +69,16 @@
                     });
                 });
             });
+
+            // ตรวจสอบว่าเบราว์เซอร์เป็น Safari หรือไม่
+            if (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome')) {
+                // Safari ไม่รองรับ beforeinstallprompt event
+                // แสดงปุ่มติดตั้งสำหรับ Safari
+                installCard.style.display = 'block';
+                installBtn.addEventListener('click', () => {
+                    alert('To install this app, please use the "Add to Home Screen" option in the Safari share menu.');
+                });
+            }
 
             // ตรวจสอบว่า Service Worker พร้อมใช้งานหรือไม่
             if ('serviceWorker' in navigator) {

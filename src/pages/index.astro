@@ -5,6 +5,9 @@ import 'bootstrap/dist/css/bootstrap.css'
 
 <Layout title="TPM PORTAL">
 	<main>
+
+		
+
 		<div class="row">
 			<div class="col-4 appStage">
 			  <a href="https://pigeonpost.weisework.com/login.php">
@@ -72,6 +75,11 @@ import 'bootstrap/dist/css/bootstrap.css'
 </Layout>
 
 <style>
+	.card {
+		margin-top: 20px;
+		padding: 20px;
+		background-color: #fff;
+	}
 	main {
 		margin: auto;
 		padding: 1rem;
@@ -107,3 +115,38 @@ import 'bootstrap/dist/css/bootstrap.css'
 		font-size: 14px;
 	}
 </style>
+
+<script>
+
+	type BeforeInstallPromptEvent = Event & {
+	  prompt: () => void;
+	  userChoice: Promise<{ outcome: string }>;
+	};
+	
+	let deferredPrompt: BeforeInstallPromptEvent | null = null;
+	const installBtn = document.getElementById("installBtn");
+	if (installBtn) {
+	  window.addEventListener("beforeinstallprompt", (e) => {
+		e.preventDefault();
+		deferredPrompt = e as BeforeInstallPromptEvent;
+		installBtn.style.display = "block";
+  
+		installBtn.addEventListener("click", () => {
+		  installBtn.style.display = "none";
+		  if (deferredPrompt) {
+			deferredPrompt.prompt();
+			deferredPrompt.userChoice.then(
+			  (choiceResult: { outcome: string }) => {
+				if (choiceResult.outcome === "accepted") {
+				  console.log("User accepted the install prompt");
+				} else {
+				  console.log("User dismissed the install prompt");
+				}
+				deferredPrompt = null;
+			  }
+			);
+		  }
+		});
+	  });
+	}
+  </script>
